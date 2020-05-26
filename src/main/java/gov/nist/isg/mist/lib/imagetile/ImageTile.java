@@ -513,7 +513,27 @@ public abstract class ImageTile<T> implements Comparable<ImageTile<?>> {
       this.pixelsLoaded = true;
     }
   }
-
+  
+/**
+   * Reads image tile from imagePlus
+   */
+  public void readTile(final ImagePlus image) {
+    if (this.isTileRead()) {
+      return;
+    }
+    Log.msg(Log.LogType.INFO, "Loading image: " + image.getTitle());
+    if (image == null || image.getWidth() == 0 || image.getHeight() == 0) {
+      Log.msg(Log.LogType.INFO, "Unable to read file: " + image.getTitle());
+    }
+    if (image != null) {
+      this.width = image.getWidth();
+      this.height = image.getHeight();
+      this.bitDepth = image.getBitDepth();
+      (this.pixels = image.getProcessor()).setCalibrationTable((float[])null);
+      this.pixelsLoaded = true;
+    }
+  }
+  
   /**
    * Gets the raw image processor for this tile. Used to get the pixel values from the original
    * image.
@@ -549,6 +569,8 @@ public abstract class ImageTile<T> implements Comparable<ImageTile<?>> {
 
     return image;
   }
+  
+  
 
   /**
    * Gets the bit depth for the image: e.g. 16-bit; 32-bit...
